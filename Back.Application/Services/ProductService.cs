@@ -1,6 +1,7 @@
 ﻿using Back.Application.Models;
 using Back.Application.Repositories;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace Back.Application.Services;
 
@@ -10,7 +11,7 @@ public class ProductService : IProductService
     private readonly IValidator<Product> _productValidator;
     private readonly IValidator<GetAllProductsOptions> _allProductsOptionsValidator;
 
-    public ProductService(IProductRepository productRepository, 
+    public ProductService(IProductRepository productRepository,
         IValidator<Product> productValidator,
         IValidator<GetAllProductsOptions> allProductsOptionsValidator)
     {
@@ -19,39 +20,39 @@ public class ProductService : IProductService
         _allProductsOptionsValidator = allProductsOptionsValidator;
     }
 
-    public async Task<bool> CreateAsync(Product product, 
+    public async Task<bool> CreateAsync(Product product,
         CancellationToken token = default)
     {
         var exists = await _productRepository.ExustsBySlug(product.Name, token);
-        if (exists) 
+        if (exists)
         {
             return false;
         }
         await _productValidator.ValidateAndThrowAsync(product);
-        return await _productRepository.CreateAsync(product,token);
+        return await _productRepository.CreateAsync(product, token);
     }
-    
+
     public async Task<IEnumerable<Product>> GetAllProducts(
         GetAllProductsOptions options,
         CancellationToken token = default)
     {
         await _allProductsOptionsValidator.ValidateAndThrowAsync(options);
-        var products = await _productRepository.GetAllProducts(options,token);
+        var products = await _productRepository.GetAllProducts(options, token);
         return products;
     }
 
-    public async Task<Product?> GetByIdAsync(Guid id, 
+    public async Task<Product?> GetByIdAsync(Guid id,
         CancellationToken token = default)
     {
         return await _productRepository.GetByIdAsync(id, token);
     }
 
-    public async Task<Product?> UpdateAsync(Product product, 
+    public async Task<Product?> UpdateAsync(Product product,
         CancellationToken token = default)
     {
         await _productValidator.ValidateAndThrowAsync(product);
-        var exists = await _productRepository.ExistsById(product.Id,token);
-        if(!exists) 
+        var exists = await _productRepository.ExistsById(product.Id, token);
+        if (!exists)
         {
             return null;
         }
@@ -59,7 +60,7 @@ public class ProductService : IProductService
         return product;
     }
 
-    public async Task<bool> DeleteByIdAsync(Guid id, 
+    public async Task<bool> DeleteByIdAsync(Guid id,
         CancellationToken token = default)
     {
         return await _productRepository.DeleteByIdAsync(id, token);

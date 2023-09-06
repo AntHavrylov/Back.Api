@@ -6,10 +6,13 @@ namespace Back.Api.Mapping
     public class ValidationMappingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ValidationMappingMiddleware> _logger;
 
-        public ValidationMappingMiddleware(RequestDelegate next)
+        public ValidationMappingMiddleware(RequestDelegate next, 
+            ILogger<ValidationMappingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context) 
@@ -24,11 +27,15 @@ namespace Back.Api.Mapping
                 var validationFailureResponse = new ValidationFailureResponse
                 {
                     Errors = ex.Errors.Select(x => new ValidationResponse
-                    { 
+                    {
                         Message = x.ErrorMessage,
                         PropertyName = x.PropertyName,
                     })
                 };
+                foreach(var error in ex.Errors) 
+                {
+                    _logger.LogError(ex, "Property {{PropertyName}} validation failed", error.PropertyName);
+                }
                 await context.Response.WriteAsJsonAsync(validationFailureResponse);
             }
 

@@ -1,6 +1,7 @@
 ﻿using Back.Application.DataBase;
 using Back.Application.Models;
 using Dapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,13 @@ namespace Back.Application.Repositories
     {
         private const string tableName = "products";
         private readonly IDbConnectionFactory _dbConnectionFactory;
+        private readonly ILogger<ProductRepository> _logger;
 
-
-        public ProductRepository(IDbConnectionFactory dbConnectionFactory)
+        public ProductRepository(IDbConnectionFactory dbConnectionFactory,
+            ILogger<ProductRepository> logger)
         {
             _dbConnectionFactory = dbConnectionFactory;
+            _logger = logger;
         }
 
         public async Task<bool> CreateAsync(Product product, CancellationToken token = default)
@@ -28,6 +31,8 @@ namespace Back.Application.Repositories
                 insert into products (id,name,description)
                 values(@Id,@Name,@Description)
                 """, product, cancellationToken: token));
+            _logger.LogInformation("Product '{ProductName}' with id {ProductId} create {result}", 
+                product.Name, product.Id, result > 0 ? "success" : "fail");
             return result > 0;
         }
 
@@ -57,7 +62,7 @@ namespace Back.Application.Repositories
                         pageSize = options.PageSize
                     },
                     cancellationToken: token));
-
+            _logger.LogInformation("Products {ProductCount} retrieved", result.Count());
             return result.Select(p => new Product()
             {
                 Id = p.id,
@@ -74,6 +79,8 @@ namespace Back.Application.Repositories
                     select * from {tableName}
                     where id = @id
                     """, new { id }, cancellationToken: token));
+            _logger.LogInformation("Product '{ProductName}' with id {ProductId} was retrieved", 
+                result.Name, result.Id);
             return result;
         }
 
@@ -81,7 +88,6 @@ namespace Back.Application.Repositories
         {
             using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             using var transaction = connection.BeginTransaction();
-
             await connection.ExecuteAsync(
                 new CommandDefinition($"""
                     delete from {tableName} 
@@ -93,8 +99,9 @@ namespace Back.Application.Repositories
                     insert into {tableName} (id, name, description)
                     values (@Id,@Name,@Description)
                     """, product, cancellationToken: token));
-
             transaction.Commit();
+            _logger.LogInformation("Product '{ProductName}' with id {ProductId} update {result}", 
+                product.Name, product.Id, result > 0 ? "success" : "fail" );
             return result > 0;
         }
 
@@ -105,6 +112,7 @@ namespace Back.Application.Repositories
                 delete from {tableName}
                 where id = @id
                 """, new { id }, cancellationToken: token));
+            _logger.LogInformation("Product {ProductId} deleted {result}", id, result > 0 ? "success" : "fail");
             return result > 0;
         }
 
