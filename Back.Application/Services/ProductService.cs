@@ -23,7 +23,7 @@ public class ProductService : IProductService
     public async Task<bool> CreateAsync(Product product,
         CancellationToken token = default)
     {
-        var exists = await _productRepository.ExustsBySlug(product.Name, token);
+        var exists = await _productRepository.ExistsBySlug(product.Name, token);
         if (exists)
         {
             return false;

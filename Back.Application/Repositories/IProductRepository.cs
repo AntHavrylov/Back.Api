@@ -17,7 +17,7 @@ public interface IProductRepository
 
     Task<bool> ExistsById(Guid id, CancellationToken token = default);
 
-    Task<bool> ExustsBySlug(string slug, CancellationToken token = default);    
+    Task<bool> ExistsBySlug(string slug, CancellationToken token = default);    
 
     Task<int> GetCountAsync(string? name, CancellationToken token = default);
 }

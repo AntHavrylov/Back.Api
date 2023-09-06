@@ -126,7 +126,7 @@ namespace Back.Application.Repositories
             return result;
         }
 
-        public async Task<bool> ExustsBySlug(string slug, CancellationToken token = default)
+        public async Task<bool> ExistsBySlug(string slug, CancellationToken token = default)
         {
             using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var result = await connection.ExecuteScalarAsync<bool>(new CommandDefinition($"""
