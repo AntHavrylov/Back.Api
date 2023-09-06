@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Back.Contracts.Responses
 {
-    public class ProductResponse
+    public class ProductResponse 
     {
         public Guid Id { get; init; }
 

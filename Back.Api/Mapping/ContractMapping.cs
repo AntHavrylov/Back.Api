@@ -4,7 +4,7 @@ using Back.Contracts.Responses;
 
 namespace Back.Api.Mapping
 {
-    public static class ProductMapping
+    public static class ContractMapping
     {
         public static Product MapToProduct(this CreateProductRequest createProductRequest) =>
             new()
@@ -30,10 +30,33 @@ namespace Back.Api.Mapping
                 Description = product.Description,
             };
 
-        public static ProductsResponse MapToProductResponses(this IEnumerable<Product> products) =>
+        public static ProductsResponse MapToProductResponses(
+            this IEnumerable<Product> products,
+            int page,
+            int pageSize,
+            int productCount
+            ) =>
             new()
             {
-                Items = products.Select(MapToProductResponse)
+                Items = products.Select(MapToProductResponse),
+                Page = page,
+                PageSize = pageSize,
+                Total = productCount
             };
+
+        public static GetAllProductsOptions MapToOptions(this GetAllProductsRequest request) =>
+            new()
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                Name = request.Name,
+                SortField = request.SortBy?.Trim('+','-'), 
+                SortOrder = request.SortBy is null ? 
+                    SortOrder.Unsorted : 
+                    request.SortBy.StartsWith('-') ? 
+                        SortOrder.Descending:
+                        SortOrder.Ascending,
+            };
+                
     }
 }

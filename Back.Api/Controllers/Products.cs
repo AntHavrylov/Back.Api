@@ -21,9 +21,12 @@ public class Products : ControllerBase
     public async Task<IActionResult> GetAsync([FromBody] CreateProductRequest createProductRequest, 
         CancellationToken token)
     {
-
         var product = createProductRequest.MapToProduct();
-        await _productService.CreateAsync(product, token);
+        var result = await _productService.CreateAsync(product, token);
+        if (!result) 
+        {
+            return Conflict();
+        }
         return CreatedAtAction(nameof(Get), new { id = product.Id }, product.MapToProductResponse());
     }
 
@@ -39,10 +42,15 @@ public class Products : ControllerBase
     [Authorize]
     [HttpGet(ApiEndpoints.Products.GetAll)]
     public async Task<IActionResult> GetAll(
+        [FromQuery] GetAllProductsRequest request,
         CancellationToken token)
     {
-        var products = await _productService.GetAllProducts(token);
-        return Ok(products.MapToProductResponses());
+        var options = request.MapToOptions();
+        var propductCount = await _productService.GetCountAsync(options.Name, token);
+
+
+        var products = await _productService.GetAllProducts(options, token);
+        return Ok(products.MapToProductResponses(request.Page,request.PageSize, propductCount));
     }
 
     [Authorize(AuthConstants.TrustedMemberPolicyName)]

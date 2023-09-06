@@ -15,7 +15,9 @@ public interface IProductService
 
     Task<Product?> UpdateAsync(Product product, CancellationToken token = default);
 
-    Task<IEnumerable<Product>> GetAllProducts(CancellationToken token = default);
+    Task<IEnumerable<Product>> GetAllProducts(GetAllProductsOptions options, CancellationToken token = default);
 
     Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default);
+
+    Task<int> GetCountAsync(string? name, CancellationToken token = default);
 }
