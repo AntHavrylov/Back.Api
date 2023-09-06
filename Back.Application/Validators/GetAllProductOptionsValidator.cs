@@ -25,8 +25,7 @@ public class GetAllProductOptionsValidator : AbstractValidator<GetAllProductsOpt
             .WithMessage("Page has to be greater than or equal to 1.");
 
         RuleFor(x => x.PageSize)
-            .GreaterThanOrEqualTo(1)
-            .LessThanOrEqualTo(100)
+            .InclusiveBetween(1,100)
             .WithMessage("Page size has to be between 1 and 100.");
     
     }
