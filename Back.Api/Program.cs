@@ -1,10 +1,13 @@
 using Back.Api;
 using Back.Api.Health;
 using Back.Api.Mapping;
+using Back.Api.Swagger;
 using Back.Application;
 using Back.Application.DataBase;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,8 +49,11 @@ builder.Services.AddControllers();
 builder.Services.AddHealthChecks()
     .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
 
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen(x => x.OperationFilter<SwaggerDefaultValues>());
+
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication();
 builder.Services.AddDatabase(config["Database:ConnectionString"]!);
