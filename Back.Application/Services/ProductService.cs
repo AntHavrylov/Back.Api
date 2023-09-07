@@ -32,12 +32,12 @@ public class ProductService : IProductService
         return await _productRepository.CreateAsync(product, token);
     }
 
-    public async Task<IEnumerable<Product>> GetAllProducts(
+    public async Task<IEnumerable<Product>> GetAllAsync(
         GetAllProductsOptions options,
         CancellationToken token = default)
     {
         await _allProductsOptionsValidator.ValidateAndThrowAsync(options);
-        var products = await _productRepository.GetAllProducts(options, token);
+        var products = await _productRepository.GetAllAsync(options, token);
         return products;
     }
 
@@ -51,7 +51,7 @@ public class ProductService : IProductService
         CancellationToken token = default)
     {
         await _productValidator.ValidateAndThrowAsync(product);
-        var exists = await _productRepository.ExistsById(product.Id, token);
+        var exists = await _productRepository.ExistsByIdAsync(product.Id, token);
         if (!exists)
         {
             return null;

@@ -36,7 +36,7 @@ namespace Back.Application.Repositories
             return result > 0;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProducts(GetAllProductsOptions options,
+        public async Task<IEnumerable<Product>> GetAllAsync(GetAllProductsOptions options,
             CancellationToken token = default)
         {
             var orderClause = string.Empty;
@@ -116,7 +116,7 @@ namespace Back.Application.Repositories
             return result > 0;
         }
 
-        public async Task<bool> ExistsById(Guid id, CancellationToken token = default)
+        public async Task<bool> ExistsByIdAsync(Guid id, CancellationToken token = default)
         {
             using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var result = await connection.ExecuteScalarAsync<bool>(new CommandDefinition($"""

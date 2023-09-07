@@ -10,12 +10,12 @@ public interface IProductRepository
     
     Task<bool> UpdateAsync(Product product, CancellationToken token = default);
     
-    Task<IEnumerable<Product>> GetAllProducts (GetAllProductsOptions options, 
+    Task<IEnumerable<Product>> GetAllAsync (GetAllProductsOptions options, 
         CancellationToken token = default);
     
     Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default);
 
-    Task<bool> ExistsById(Guid id, CancellationToken token = default);
+    Task<bool> ExistsByIdAsync(Guid id, CancellationToken token = default);
 
     Task<bool> ExistsBySlug(string slug, CancellationToken token = default);    
 

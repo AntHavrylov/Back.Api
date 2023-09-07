@@ -49,7 +49,7 @@ public class Products : ControllerBase
         var propductCount = await _productService.GetCountAsync(options.Name, token);
 
 
-        var products = await _productService.GetAllProducts(options, token);
+        var products = await _productService.GetAllAsync(options, token);
         return Ok(products.MapToProductResponses(request.Page,request.PageSize, propductCount));
     }
 
