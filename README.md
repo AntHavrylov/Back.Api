@@ -62,7 +62,7 @@ You have two convenient options for testing the API:
 
 2. **Postman**: We have provided a Postman collection export file that contains information about API endpoints for generating JWT tokens and making requests.
 
-   - Postman Collection File: [helpers/postman_collection.json](helpers/postman_collection.json)
+   - Postman Collection File: [helpers/postman_collection.json](https://github.com/AntHavrylov/Back.Api/blob/master/Helpers/postman_collection.json)
 
    This collection file simplifies the process of testing various API endpoints, including those that require authentication and authorization. You can import this collection into Postman and start testing the API immediately.
 
